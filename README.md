@@ -1,0 +1,1 @@
+This project is a handful of scripts to allow setting colors and flash pattern for the 3DR Solo LEDs. For these scripts to have any affect, you must be running the custom PixHawk firmware available from https://www.github.com/hugheaves.com/ardupilot-solo.
