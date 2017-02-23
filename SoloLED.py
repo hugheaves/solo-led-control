@@ -1,4 +1,22 @@
+'''
+  Copyright (C) 2017  Hugh Eaves
+ 
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+ 
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+ 
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+'''
+
 from dronekit import connect
+from time import sleep
 
 class SoloLED:
     # LED position values
@@ -51,6 +69,7 @@ class SoloLED:
     CUSTOM_BYTES_LENGTH = 24
 
     def __init__(self, ip = None, vehicle = None, wait_ready=True):
+        print "Connecting to", ip
         if (ip == None):
             ip = "udpin:0.0.0.0:14550"
         if (vehicle == None):
@@ -64,14 +83,20 @@ class SoloLED:
     
     # Set LED macro
     def macro(self, led, macro):
+        print "Setting macro", led, macro
         self.sendMessage(led, macro)
 
     # Set LED pattern and color (RGB value)
-    def rgb(self, led, pattern, red, green, blue):
-        print "rgb", led, pattern, red, green, blue
+    def color(self, led, pattern, red, green, blue):
+        print "Setting color", led, pattern, red, green, blue
         byteArray = bytearray(['R', 'G', 'B', '0', pattern, red, green, blue])
         self.sendMessage(led, self.MACRO_NOT_A_MACRO_BUT_A_CUSTOM_COMMAND, byteArray)
-     
+    
+    # reset LED to default behavior
+    def reset(self, led):
+        print "Resetting", led
+        self.macro(led, SoloLED.MACRO_RESET)
+        
     # Set a custom mode / message for a LED
     def custom(self, led, customBytes):
         byteArray = bytearray(['C', 'M', 'D', '0'])
@@ -81,9 +106,13 @@ class SoloLED:
     def sendMessage(self, led, macro, byteArray = bytearray()):
         msg = self.vehicle.message_factory.led_control_encode(0, 0, led, macro, len(byteArray), self.padArray(byteArray))
         self.vehicle.send_mavlink(msg)
-        self.vehicle.flush()
+        # Can't find a functional flush() operation, so wait instead
 
     def close(self):
+        # Doesn't appear to do anything unless sending waypoints
+        self.vehicle.flush()
+        # Can't find a functional flush() operation, so wait instead (hopefully that's enough)
+        sleep(0.2)
         self.vehicle.close()
         if self.vehicle._handler.mavlink_thread_in is not None:
             self.vehicle._handler.mavlink_thread_in.join()

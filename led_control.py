@@ -19,31 +19,66 @@
 import argparse
 from SoloLED import SoloLED
 
- 
+class AppendAction(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        if not namespace.commands:
+            namespace.commands = [];
+        optionName = option_string.lstrip(parser.prefix_chars)
+        valueList = getattr(namespace, self.dest)
+        if not valueList:
+            valueList = []
+            setattr(namespace, self.dest, valueList)
+        if not self.const:
+            valueList.append((optionName , values))
+        else:
+            valueList.append((optionName , values))
+        return
+
+def toLED(led):
+    return getattr(SoloLED, "LED_" + led.upper())
+
+def toPattern(pattern):
+    return getattr(SoloLED, "PATTERN_" + pattern.upper())
+
 parser = argparse.ArgumentParser()
-subparsers = parser.add_subparsers(help='sub-command help', dest="command")
-resetParser = subparsers.add_parser('reset', help="Reset LED to default (system controlled) state")
-resetParser.add_argument("led", metavar="led", choices=["all", "front_left", "front_right", "back_left", "back_right"], help="LED selection, one of: %(choices)s")
-colorParser = subparsers.add_parser('color', help='Set LED to a fixed color and pattern')
-colorParser.add_argument("led", metavar="led", choices=["all", "front_left", "front_right", "back_left", "back_right"], help="LED selection, one of: %(choices)s")
-colorParser.add_argument("pattern",  metavar="flash pattern", choices=["sine", "solid", "siren", "strobe", "fadein", "fadeout"], help="LED flash pattern, one of: %(choices)s")
-colorParser.add_argument("red", type=int, metavar="red", help="red brightness value (0 <= value <= 255)",choices=xrange(0,256))
-colorParser.add_argument("green", type=int, metavar="green", help="green brightness value (0 <= value <= 255)",choices=xrange(0,256))
-colorParser.add_argument("blue", type=int, metavar="blue", help="blue brightness value (0 <= value <= 255)",choices=xrange(0,256))
+parser.add_argument("--reset", action=AppendAction, dest="commands", const=True, nargs=0, help="Reset to default color and pattern.")
+parser.add_argument("--pattern", action=AppendAction, dest="commands", choices=["sine", "solid", "siren", "strobe", "fadein", "fadeout"], help="Set LED flash pattern.")
+parser.add_argument("--color", action=AppendAction, dest="commands", nargs=3, metavar=("red", "green", "blue"), type=int, choices=range(0, 256), help="Set LED red, green, and blue brightness values. (range 0 - 255)")
+parser.add_argument("--applyto", action=AppendAction, required=True, dest="commands", choices=["all", "front_left", "front_right", "back_left", "back_right"], help="Apply settings to LED(s)")
+parser.add_argument("--ip", metavar = "protocol:ipAddress:port", default="udpin:127.0.0.1:14550", help = "Protocol / IP address / Port number for connction")
 
-args = parser.parse_args()
+parsedArgs = parser.parse_args()
 
-soloLED = SoloLED('udpin:127.0.0.1:14550', wait_ready=False)
+soloLED = SoloLED(parsedArgs.ip);
 
-led = getattr(SoloLED, "LED_" + args.led.upper())
+state = None
+color = [255, 255, 255]
+pattern = SoloLED.PATTERN_SOLID
 
-if args.command == 'reset':
-    print "Resetting to default colors / vehicle controlled mode"
-    soloLED.macro(led, SoloLED.MACRO_RESET)
-elif args.command == 'color':
-    print "Setting pattern / color"
-    soloLED.rgb(led, getattr(SoloLED, "PATTERN_" + args.pattern.upper()), args.red, args.green, args.blue)
-        
-    
+for command in parsedArgs.commands:
+    commandName = command[0]
+    commandArgs = command[1]
+    if (commandName == "applyto"):
+        if (state == None):
+            raise Exception, "No settings to apply"
+        elif (state == "pattern" or state == "color"):
+            soloLED.color(toLED(commandArgs), pattern, color[0], color[1], color[2]) 
+        elif (state == "reset"):
+            soloLED.reset(toLED(commandArgs))
+        else:
+            raise Exception, "Unknown state"
+    elif (commandName == "pattern"):
+        state = commandName
+        pattern = toPattern(commandArgs)
+    elif (commandName == "color"):
+        state = commandName
+        color = commandArgs
+    elif (commandName == "reset"):
+        state = commandName
+    else:
+        raise ValueError, "Unrecognized command name " + commandName
+
+#sleep(10)
+
 soloLED.close()
 print "Done."
