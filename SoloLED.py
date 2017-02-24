@@ -107,6 +107,7 @@ class SoloLED:
         msg = self.vehicle.message_factory.led_control_encode(0, 0, led, macro, len(byteArray), self.padArray(byteArray))
         self.vehicle.send_mavlink(msg)
         # Can't find a functional flush() operation, so wait instead
+        sleep(0.1)
 
     def close(self):
         # Doesn't appear to do anything unless sending waypoints

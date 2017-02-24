@@ -20,7 +20,7 @@ To control the color and/or illumination pattern of the 3DR Solo LEDs you must i
 ## Script Installation
 Once you have the firmware installed, copy the required scripts from this repository to your Solo:
 
-* Using the same file transfer software you used for the firmware, copy *SoloLED.py* and *led_control.py* from this repository to your Solo. You can place the scripts anywhere you want, but the easiest location is directly in the root home directory (/root). This directory is included in the system default PATH and will allow you to easily run and update the scripts.
+* Using the same file transfer software you used for the firmware, copy *SoloLED.py* and *led_control.py* from this repository to your Solo. You can place the scripts anywhere you want, but the easiest location is directly in the root home directory (/home/root). This directory is included in the system default PATH and will allow you to easily run and update the scripts.
 
 **Note:** The other files, such as those in the demo_scripts directory, are not necessary for basic control of the LEDs.
 
@@ -98,7 +98,8 @@ For example, to set all LED's to yellow, with a "strobe" pattern:
 ## Combining options 
 
 Finally, you can combine different settings for different LED's into a single command:
-`led_control.py --reset all --color 255 128 32 --applyto front_left --applyto front_right --color 0 0 255 --flash strobe --applyto back_left --applyto back_right`
+
+`led_control.py --reset all --color 255 128 32 --applyto front_left --applyto front_right --color 0 0 255 --pattern strobe --applyto back_left --applyto back_right`
 
 The "--applyto" option will take the preceding settings and apply them to the given LED.
 
