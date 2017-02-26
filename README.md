@@ -132,12 +132,12 @@ If you'd like to set the LED colors on startup, you have to download two files a
 
 The files you need are (click on links to download)
 
-[init_leds.sh](https://raw.githubusercontent.com/hugheaves/solo-led-control/master/etc/default/init_leds.sh)
+[init_leds.sh](https://raw.githubusercontent.com/hugheaves/solo-led-control/master/etc/init.d/init_leds.sh)
 
 [init_leds](https://raw.githubusercontent.com/hugheaves/solo-led-control/master/etc/default/init_leds)
 
 Upload `init_leds.sh` to the `/etc/init.d/` directory on your Solo.
-Upload `init_leds` to the `/etc/default` directory on your Solo.
+Upload `init_leds` to the `/etc/default/` directory on your Solo.
 
 Then, login to your Solo using SSH and execute the following commands:
 
