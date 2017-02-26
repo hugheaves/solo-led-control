@@ -20,24 +20,35 @@ To control the color and/or illumination pattern of the 3DR Solo LEDs you must i
 ## Script Installation
 Once you have the firmware installed, copy the required scripts from this repository to your Solo:
 
-* Using the same file transfer software you used for the firmware, copy *SoloLED.py* and *led_control.py* from this repository to your Solo. You can place the scripts anywhere you want, but the easiest location is directly in the root home directory (/home/root). This directory is included in the system default PATH and will allow you to easily run and update the scripts.
+* Using the same file transfer software you used for the firmware, copy `SoloLED.py` and `led_control.py` from this repository to your Solo. You can place the scripts anywhere you want, but the easiest location is directly in the root home directory (/home/root). This directory is included in the system default PATH and will allow you to easily run and update the scripts.
+
+Here are the direct links to the scripts:
+
+[SoloLED.py](https://raw.githubusercontent.com/hugheaves/solo-led-control/master/etc/default/SoloLED.py)
+
+[led_control.py](https://raw.githubusercontent.com/hugheaves/solo-led-control/master/led_control.py)
+
 
 **Note:** The other files, such as those in the demo_scripts directory, are not necessary for basic control of the LEDs.
 
 # Usage
-Once everything is installed, you can run the "led_control.py" script to control the LEDs on Solo. You can run the script using Solex's "command" feature, or via an interactive SSH connection.
+Once everything is installed, you can run the `led_control.py` script to control the LEDs on Solo. You can run the script using Solex's "command" feature, or via an interactive SSH connection.
 
 The command to run the script is:
 
 `python led_control.py`
 
-Depending on where and how you uploaded the script, you may also be able to run the script directly, like this:
+You can also use the `chmod` command to give the script "execute permission", which means you don't have to prefix the name of the script with `python`. To give the script execute permssion exectue the following command:
+
+`chmod a+x led_control.py`
+
+Then you can run the cscript like this:
 
 `led_control.py`
 
-For simplicity, all the examples here assume the latter method. With either method, commands are added at the end of the command line (after led_control.py) to specify the control actions.
+For simplicity, all the examples here assume the script has execute permission, and dont prefix the command with `python`. With either method, options are added at the end of the command line (after led_control.py) to specify the settings that should be usd.
 
-Running the script with the "-h" option will display usage information:
+Running the script with the "-h" option will display help on the options available in the script:
 
 `led_control.py -h`
 
@@ -62,7 +73,9 @@ optional arguments:
                         Protocol / IP address / Port number for connection
 ~~~~~
 
-To use the script, you first specify settings or actions with "--color", "--pattern", or "--reset", followed by the LED's to which the settings should be applied using the "--applyto" option.
+## Basic Information
+
+To use the script, you first specify settings or actions with "--color", "--pattern", or "--reset", followed by "--applyto", specifying to which LED's the settings should be applied.
 
 ## Reset
 The "--reset" option is used to reset the LED's to their default system colors (typically red and white).
@@ -99,7 +112,57 @@ For example, to set all LED's to yellow, with a "strobe" pattern:
 
 Finally, you can combine different settings for different LED's into a single command:
 
-`led_control.py --reset all --color 255 128 32 --applyto front_left --applyto front_right --color 0 0 255 --pattern strobe --applyto back_left --applyto back_right`
+`led_control.py --reset --applyto all --color 255 128 32 --applyto front_left --applyto front_right --color 0 0 255 --pattern strobe --applyto back_left --applyto back_right`
 
-The "--applyto" option will take the preceding settings and apply them to the given LED.
+
+# Reducing Delay When Running Commands with Solex
+Solex uses an SSH connection to Solo to run commands. Unfortunately, Solo's SSH server is configured in a way that makes is slow to respond to SSH connection requests. There is a quick fix that you can make to greatly decrease the amount of time it takes Solo to respond.
+
+To fix the problem, open an SSH terminal connection to Solo (10.1.1.10), and execute the following command
+
+`echo "UseDNS no" >> /etc/ssh/sshd_config`
+
+You can also just edit the file, and add a line at the bottom with `UseDNS no`.
+
+Either way, you only need to do this once, as the change will persist between reboots.
+
+# Setting LED Colors on Startup
+
+If you'd like to set the LED colors on startup, you have to download two files and run a command.
+
+The files you need are (click on links to download)
+
+[init_leds.sh](https://raw.githubusercontent.com/hugheaves/solo-led-control/master/etc/default/init_leds.sh)
+
+[init_leds](https://raw.githubusercontent.com/hugheaves/solo-led-control/master/etc/default/init_leds)
+
+Upload `init_leds.sh` to the `/etc/init.d/` directory on your Solo.
+Upload `init_leds` to the `/etc/default` directory on your Solo.
+
+Then, login to your Solo using SSH and execute the following commands:
+
+~~~~~
+chmod a+x /etc/init.d/init_leds.sh
+update-rc.d init_leds.sh start 90 4 .
+~~~~~
+
+(Note: the period at the end of the update-rc.d command is important)
+
+Now, restart your Solo and your LEDS should initialize to "standard aeronautical lighting". **Note: The LED lights will start in normal red/white colors, and it will take about 30 seconds or so after the system boots for the custom settings to activate.**
+
+Once you've got everything working ,you can edit the `/etc/default/init_leds` file to change the custom settings to whatever you like.
+
+# Removing LED Colors on Startup
+
+To get rid of the previous settings to set the LED colors on startup, execute the following command:
+`update-rc.d -f init_leds.sh remove`
+
+and then delete `/etc/init.d/init_leds.sh` and `/etc/default/init_leds`.
+
+# Acknowledgements
+
+Thanks to Pedals2Paddles @ 3DRForums for the positive feedback, suggestions, the "standard aeronautical lighting settings", and the patience to work through my crappy instructions. :)
+
+
+
 
