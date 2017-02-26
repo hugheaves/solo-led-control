@@ -24,7 +24,7 @@ Once you have the firmware installed, copy the required scripts from this reposi
 
 Here are the direct links to the scripts:
 
-[SoloLED.py](https://raw.githubusercontent.com/hugheaves/solo-led-control/master/etc/default/SoloLED.py)
+[SoloLED.py](https://raw.githubusercontent.com/hugheaves/solo-led-control/master/SoloLED.py)
 
 [led_control.py](https://raw.githubusercontent.com/hugheaves/solo-led-control/master/led_control.py)
 
