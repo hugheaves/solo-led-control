@@ -20,7 +20,7 @@ To control the color and/or illumination pattern of the 3DR Solo LEDs you must i
 ## Script Installation
 Once you have the firmware installed, copy the required scripts from this repository to your Solo:
 
-* Using the same file transfer software you used for the firmware, copy `SoloLED.py` and `led_control.py` from this repository to your Solo. You can place the scripts anywhere you want, but the easiest location is directly in the root home directory (/home/root). This directory is included in the system default PATH and will allow you to easily run and update the scripts.
+* Using the same file transfer software you used for the firmware, copy `SoloLED.py` and `led_control.py` from this repository to your Solo. The best location to place the scripts is  `/usr/local/bin`. You'll probably need to create the directory first ,as it doesn't exist by default on Solo. Howver, this directory is included in the system default PATH and will allow you to run the scripts as "native" Linux commands.
 
 Here are the direct links to the scripts:
 
@@ -36,21 +36,21 @@ Once everything is installed, you can run the `led_control.py` script to control
 
 The command to run the script is:
 
-`python led_control.py`
+`python ./led_control.py`
 
 You can also use the `chmod` command to give the script "execute permission", which means you don't have to prefix the name of the script with `python`. To give the script execute permssion exectue the following command:
 
-`chmod a+x led_control.py`
+`chmod a+x /usr/local/bin/led_control.py`
 
 Then you can run the cscript like this:
 
-`led_control.py`
+`./led_control.py`
 
 For simplicity, all the examples here assume the script has execute permission, and dont prefix the command with `python`. With either method, options are added at the end of the command line (after led_control.py) to specify the settings that should be usd.
 
 Running the script with the "-h" option will display help on the options available in the script:
 
-`led_control.py -h`
+`./led_control.py -h`
 
 ~~~~~
 usage: led_control.py [-h] [--reset]
