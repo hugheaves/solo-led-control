@@ -14,7 +14,7 @@ These instructions are written for users already familar with SSH, file transfer
 
 [led_control_files.zip](https://github.com/hugheaves/solo-led-control/releases/download/v0.0.1/led_control_files.zip)
 
-[led_control_install.sh](https://github.com/hugheaves/solo-led-control/releases/download/v0.0.1/led_control_install.sh)
+[led_control_install.sh](https://raw.githubusercontent.com/hugheaves/solo-led-control/v0.0.1/led_control_install.sh)
 
 2. Using an SSH file transfer client such as [WinSCP](https://winscp.net/), copy the downloaded files to your 3DR Solo. (The IP address of Solo is 10.1.1.10, and the root password is "TjSDBkAu".)
 
