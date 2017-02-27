@@ -6,51 +6,50 @@ Therefore, from the GPL, under which this software is licensed:
 > This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 # Installation
-To control the color and/or illumination pattern of the 3DR Solo LEDs you must install modified PixHawk firmware and several files from this repository. The following instructions are written assuming some degree of expertise with this process.
+**Warning: This process will install a non-standard version of 3DR Solo ArduCopter v1.5.3 firmware on your solo.**
 
+These instructions are written for users already familar with SSH, file transfer, executing scripts, etc.
 
-## Firmware Installation
-* Download the lastest release of "ArduCopter-v2.px4" from [https://github.com/hugheaves/ardupilot-solo/releases](https://github.com/hugheaves/ardupilot-solo/releases)
+1. Download the following files:
 
-* Install the firmware on your Solo using the standard PixHawk firmware upgrade procedure described here:
-[https://www.github.com/3drobotics/ardupilot-solo](https://www.github.com/3drobotics/ardupilot-solo)
+[led_control_files.zip](https://github.com/hugheaves/solo-led-control/releases/download/v0.0.1/led_control_files.zip)
 
-* Verify that the correct firmware is installed by connecting to your Solo with Solex or a similar application (e.g. Solo or Tower). Use the application to check the version of the flight controller firmware. If the custom firmware is correctly installed, the app will show the flight  version as "93.7.xxx" where "93.7.xxx" matches the version that you downloaded from the releases page.
+[led_control_install.sh](https://github.com/hugheaves/solo-led-control/releases/download/v0.0.1/led_control_install.sh)
 
-## Script Installation
-Once you have the firmware installed, copy the required scripts from this repository to your Solo:
+2. Using an SSH file transfer client such as [WinSCP](https://winscp.net/), copy the downloaded files to your 3DR Solo. (The IP address of Solo is 10.1.1.10, and the root password is "TjSDBkAu".)
 
-* Using the same file transfer software you used for the firmware, copy `SoloLED.py` and `led_control.py` from this repository to your Solo. The best location to place the scripts is  `/usr/local/bin`. You'll probably need to create the directory first ,as it doesn't exist by default on Solo. Howver, this directory is included in the system default PATH and will allow you to run the scripts as "native" Linux commands.
+3. Using either Solex, or an SSH terminal client such as [Putty](www.chiark.greenend.org.uk/~sgtatham/putty/) execute the following command:
 
-Here are the direct links to the scripts:
+`sh ./led_control_install.sh`
 
-[SoloLED.py](https://raw.githubusercontent.com/hugheaves/solo-led-control/master/SoloLED.py)
+If everything is working, you should see the following output, and your Solo will reboot. You will see "rainbow colored LED's" while the new firmware is installed. Then your Solo will show the normal "red/white" LED pattern, and after 20-30 more seconds, the pattern will change to standard aviation colors.
 
-[led_control.py](https://raw.githubusercontent.com/hugheaves/solo-led-control/master/led_control.py)
+~~~~~
+*** Installing Solo LED Control ***
+Created temporary directory /tmp/tmp.EYfone
+Unpacking solo_led_files.zip into /tmp/tmp.EYfone
+Making /usr/local/bin directory
+Copying files to Solo filesystem
+Setting permissions
+Activating boot script
+ System startup links for /etc/init.d/init_leds.sh already exist.
+Preparing firmware upgrade
+Cleaning up
+Sync filesystem
+Rebooting
+~~~~~
 
-
-**Note:** The other files, such as those in the demo_scripts directory, are not necessary for basic control of the LEDs.
 
 # Usage
 Once everything is installed, you can run the `led_control.py` script to control the LEDs on Solo. You can run the script using Solex's "command" feature, or via an interactive SSH connection.
 
 The command to run the script is:
 
-`python ./led_control.py`
-
-You can also use the `chmod` command to give the script "execute permission", which means you don't have to prefix the name of the script with `python`. To give the script execute permssion exectue the following command:
-
-`chmod a+x /usr/local/bin/led_control.py`
-
-Then you can run the cscript like this:
-
-`./led_control.py`
-
-For simplicity, all the examples here assume the script has execute permission, and dont prefix the command with `python`. With either method, options are added at the end of the command line (after led_control.py) to specify the settings that should be usd.
+`led_control.py`
 
 Running the script with the "-h" option will display help on the options available in the script:
 
-`./led_control.py -h`
+`led_control.py -h`
 
 ~~~~~
 usage: led_control.py [-h] [--reset]
@@ -126,38 +125,13 @@ You can also just edit the file, and add a line at the bottom with `UseDNS no`.
 
 Either way, you only need to do this once, as the change will persist between reboots.
 
-# Setting LED Colors on Startup
+# Customizing startup color settings
 
-If you'd like to set the LED colors on startup, you have to download two files and run a command.
+The startup colors are set in the `/etc/default/init_leds` file on your Solo. Edit this file with whatever led_control options you would like to be used at system startup.
 
-The files you need are (click on links to download)
+# Disabling startup color settings
 
-[init_leds.sh](https://raw.githubusercontent.com/hugheaves/solo-led-control/master/etc/init.d/init_leds.sh)
-
-[init_leds](https://raw.githubusercontent.com/hugheaves/solo-led-control/master/etc/default/init_leds)
-
-Upload `init_leds.sh` to the `/etc/init.d/` directory on your Solo.
-Upload `init_leds` to the `/etc/default/` directory on your Solo.
-
-Then, login to your Solo using SSH and execute the following commands:
-
-~~~~~
-chmod a+x /etc/init.d/init_leds.sh
-update-rc.d init_leds.sh start 90 4 .
-~~~~~
-
-(Note: the period at the end of the update-rc.d command is important)
-
-Now, restart your Solo and your LEDS should initialize to "standard aeronautical lighting". **Note: The LED lights will start in normal red/white colors, and it will take about 30 seconds or so after the system boots for the custom settings to activate.**
-
-Once you've got everything working ,you can edit the `/etc/default/init_leds` file to change the custom settings to whatever you like.
-
-# Removing LED Colors on Startup
-
-To get rid of the previous settings to set the LED colors on startup, execute the following command:
-`update-rc.d -f init_leds.sh remove`
-
-and then delete `/etc/init.d/init_leds.sh` and `/etc/default/init_leds`.
+Deleting the `/etc/default/init_leds` file on your Solo will prevent the colors being set on startup.
 
 # Acknowledgements
 
