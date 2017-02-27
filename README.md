@@ -18,7 +18,7 @@ These instructions are written for users already familar with SSH, file transfer
 
 2. Using an SSH file transfer client such as [WinSCP](https://winscp.net/), copy the downloaded files to your 3DR Solo. (The IP address of Solo is 10.1.1.10, and the root password is "TjSDBkAu".)
 
-3. Using either Solex, or an SSH terminal client such as [Putty](www.chiark.greenend.org.uk/~sgtatham/putty/) execute the following command:
+3. Using either Solex, or an SSH terminal client such as [Putty](http://www.chiark.greenend.org.uk/~sgtatham/putty/) execute the following command:
 
 `sh ./led_control_install.sh`
 
