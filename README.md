@@ -11,16 +11,13 @@ Therefore, from the GPL, under which this software is licensed:
 These instructions are written for users already familar with SSH, file transfer, executing scripts, etc.
 
 1. Download the following files:
-
-[led_control_files.zip](https://github.com/hugheaves/solo-led-control/releases/download/v0.0.1/led_control_files.zip)
-
-[led_control_install.sh](https://raw.githubusercontent.com/hugheaves/solo-led-control/v0.0.1/led_control_install.sh)
+[install_led_control.sh](https://raw.githubusercontent.com/hugheaves/solo-led-control/v0.0.1/install_led_control.sh)
 
 2. Using an SSH file transfer client such as [WinSCP](https://winscp.net/), copy the downloaded files to your 3DR Solo. (The IP address of Solo is 10.1.1.10, and the root password is "TjSDBkAu".)
 
 3. Using either Solex, or an SSH terminal client such as [Putty](http://www.chiark.greenend.org.uk/~sgtatham/putty/) execute the following command:
 
-`sh ./led_control_install.sh`
+`sh ./install_led_control.sh`
 
 If everything is working, you should see the following output, and your Solo will reboot. You will see "rainbow colored LED's" while the new firmware is installed. Then your Solo will show the normal "red/white" LED pattern, and after 20-30 more seconds, the pattern will change to standard aviation colors.
 
@@ -52,24 +49,35 @@ Running the script with the "-h" option will display help on the options availab
 `led_control.py -h`
 
 ~~~~~
-usage: led_control.py [-h] [--reset]
-               [--pattern {sine,solid,siren,strobe,fadein,fadeout}]
-               [--color red green blue] --applyto
-               {all,front_left,front_right,back_left,back_right}
-               [--ip protocol:ipAddress:port]
+usage: led_control.py [-h]
+                      [--reset {all,front_left,front_right,back_left,back_right}]
+                      [--pattern {sine,solid,siren,strobe,fadein,fadeout}]
+                      [--phaseOffset degrees] [--period period]
+                      [--repeat count] [--color red green blue]
+                      [--amplitude red green blue]
+                      [--applyto {all,front_left,front_right,back_left,back_right}]
+                      [--ip protocol:ipAddress:port]
 
 optional arguments:
   -h, --help            show this help message and exit
-  --reset               Reset to default color and pattern.
+  --reset {all,front_left,front_right,back_left,back_right}
+                        Reset to default color and pattern.
   --pattern {sine,solid,siren,strobe,fadein,fadeout}
                         Set LED flash pattern.
+  --phaseOffset degrees
+                        Set phase offset in degrees (range 0-360).
+  --period period       Set period in milliseconds (range 0-4000).
+  --repeat count        Set repeat count (0-255).
   --color red green blue
                         Set LED red, green, and blue brightness values. (range
+                        0 - 255)
+  --amplitude red green blue
+                        Set LED red, green, and blue amplitude values. (range
                         0 - 255)
   --applyto {all,front_left,front_right,back_left,back_right}
                         Apply settings to LED(s)
   --ip protocol:ipAddress:port
-                        Protocol / IP address / Port number for connection
+                        Protocol / IP address / Port number for connction
 ~~~~~
 
 ## Basic Information
