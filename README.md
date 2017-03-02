@@ -11,7 +11,7 @@ Therefore, from the GPL, under which this software is licensed:
 These instructions are written for users already familar with SSH, file transfer, executing scripts, etc.
 
 1. Download the following files:
-[install_led_control.sh](https://raw.githubusercontent.com/hugheaves/solo-led-control/v0.0.1/install_led_control.sh)
+[install_led_control.sh](https://raw.githubusercontent.com/hugheaves/solo-led-control/v0.0.3/install_led_control.sh)
 
 2. Using an SSH file transfer client such as [WinSCP](https://winscp.net/), copy the downloaded files to your 3DR Solo. (The IP address of Solo is 10.1.1.10, and the root password is "TjSDBkAu".)
 
