@@ -8,7 +8,7 @@ Therefore, from the GPL, under which this software is licensed:
 # Installation
 **Warning: This process will install a non-standard version of 3DR Solo ArduCopter v1.5.3 firmware on your solo.**
 
-These instructions are written for users already familar with SSH, file transfer, executing scripts, etc.
+These instructions are written for users already somewhat familiar with SSH, file transfer, executing scripts, etc.
 
 1. Download the following files:
 [install_led_control.sh](https://raw.githubusercontent.com/hugheaves/solo-led-control/v0.0.3/install_led_control.sh)
@@ -38,13 +38,13 @@ Rebooting
 
 
 # Usage
-Once everything is installed, you can run the `led_control.py` script to control the LEDs on Solo. You can run the script using Solex's "command" feature, or via an interactive SSH connection.
+Once everything is installed, you can use the `led_control.py` script to control Solo's LEDs. You can run the script using Solex's "command" feature, or via an interactive SSH connection.
 
 The command to run the script is:
 
 `led_control.py`
 
-Running the script with the "-h" option will display help on the options available in the script:
+Running the script with the "-h" option will display help information:
 
 `led_control.py -h`
 
@@ -81,17 +81,25 @@ optional arguments:
 ~~~~~
 
 ## Basic Information
+The `led_control.py script provideds command line options to set LED colors and patterns, and these settings can be applied to individual LED's, or all LED's at once.
 
-To use the script, you can reset the LED's with "--reset", or specify settings with "--color", "--pattern", etc. followed by "--applyto", which specifies the LED's that the settings should be applied to.
-
-## Reset
-The "--reset" option is used to reset the LED's to their default system colors (typically red and white).
+## Resetting LED's
+The "--reset" option is used to reset the LED's to their default system colors (typically red and white). To reset LED's, use the "--reset" command line option, followed by the LED that should be reset. (either individual or "all").
 
 For example, to reset all of the LED's, execute the following command.
 
 `led_control.py --reset all`
 
-## Color
+You can reset individual LED's like this:
+
+`led_control.py --reset front_left`
+
+## Setting Colors, Patterns, etc.
+Individual command line options are provided for each of the various settings available with the Solo LEDs (color, pattern, etc.). Multiple settings can be specified at once, and then applied to one or more LEDs using the "--applyto" command line option.
+
+For example, to set all 
+
+### Color
 The "--color" option sets the color of the LED(s) using the supplied brightness values for red, green, and blue. The brightness can range from 0 (off) to 255 (full brightness). "--color" can also be combined with "--pattern" to specify the illumination pattern. (see Pattern below)
 
 Some examples:
