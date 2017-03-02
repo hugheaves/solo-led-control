@@ -17,6 +17,7 @@
 '''
 
 import argparse
+import sys
 from SoloLED import SoloLED
 
 class AppendAction(argparse.Action):
@@ -40,41 +41,64 @@ def toLED(led):
 def toPattern(pattern):
     return getattr(SoloLED, "PATTERN_" + pattern.upper())
 
+ledChoices = choices=["all", "front_left", "front_right", "back_left", "back_right"]
 parser = argparse.ArgumentParser()
-parser.add_argument("--reset", action=AppendAction, dest="commands", const=True, nargs=0, help="Reset to default color and pattern.")
+parser.add_argument("--reset", action=AppendAction, dest="commands", choices=ledChoices, help="Reset to default color and pattern.")
 parser.add_argument("--pattern", action=AppendAction, dest="commands", choices=["sine", "solid", "siren", "strobe", "fadein", "fadeout"], help="Set LED flash pattern.")
+parser.add_argument("--phaseOffset", action=AppendAction, dest="commands", type = int, help="Set phase offset (range 0-65535).")
+parser.add_argument("--period", action=AppendAction, dest="commands", type = int, help="Set period in milliseconds (range 0-65535).")
+parser.add_argument("--repeat", action=AppendAction, dest="commands", type = int, help="Set repeat count (0-255).")
 parser.add_argument("--color", action=AppendAction, dest="commands", nargs=3, metavar=("red", "green", "blue"), type=int, choices=range(0, 256), help="Set LED red, green, and blue brightness values. (range 0 - 255)")
-parser.add_argument("--applyto", action=AppendAction, required=True, dest="commands", choices=["all", "front_left", "front_right", "back_left", "back_right"], help="Apply settings to LED(s)")
+parser.add_argument("--amplitude", action=AppendAction, dest="commands", nargs=3, metavar=("red", "green", "blue"), type=int, choices=range(0, 256), help="Set LED red, green, and blue amplitude values. (range 0 - 255)")
+parser.add_argument("--applyto", action=AppendAction, dest="commands", choices=ledChoices, help="Apply settings to LED(s)")
 parser.add_argument("--ip", metavar = "protocol:ipAddress:port", default="udpin:127.0.0.1:14550", help = "Protocol / IP address / Port number for connction")
 
 parsedArgs = parser.parse_args()
 
-soloLED = SoloLED(parsedArgs.ip);
-
-state = None
 color = [255, 255, 255]
 pattern = SoloLED.PATTERN_SOLID
+phaseOffset = None
+repeat = None
+period = None
+amplitude = None
+
+if parsedArgs.commands is None:
+    parser.print_help()
+    sys.exit()
+
+soloLED = SoloLED(parsedArgs.ip)
 
 for command in parsedArgs.commands:
     commandName = command[0]
     commandArgs = command[1]
     if (commandName == "applyto"):
-        if (state == None):
-            raise Exception, "No settings to apply"
-        elif (state == "pattern" or state == "color"):
-            soloLED.color(toLED(commandArgs), pattern, color[0], color[1], color[2]) 
-        elif (state == "reset"):
-            soloLED.reset(toLED(commandArgs))
+        if (phaseOffset is None and repeat is None and amplitude is None and period is None):
+            soloLED.rgb(toLED(commandArgs), pattern, color[0], color[1], color[2])
         else:
-            raise Exception, "Unknown state"
+            # default values that weren't already set
+            if (amplitude is None):
+                amplitude = [0, 0, 0];
+            if (repeat is None):
+                repeat = 0;
+            if (phaseOffset is None):
+                phaseOffset = 0;
+            if (period is None):
+                period = 2000;
+            soloLED.rgbExtended(toLED(commandArgs), pattern, color[0], color[1], color[2], amplitude[0], amplitude[1], amplitude[2], period, phaseOffset) 
     elif (commandName == "pattern"):
-        state = commandName
         pattern = toPattern(commandArgs)
     elif (commandName == "color"):
-        state = commandName
         color = commandArgs
+    elif (commandName == "amplitude"):
+        amplitude = commandArgs
+    elif (commandName == "phaseOffset"):
+        phaseOffset = commandArgs
+    elif (commandName == "period"):
+        period = commandArgs
+    elif (commandName == "repeat"):
+        repeat = commandArgs
     elif (commandName == "reset"):
-        state = commandName
+        soloLED.reset(toLED(commandArgs))
     else:
         raise ValueError, "Unrecognized command name " + commandName
 

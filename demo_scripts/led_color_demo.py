@@ -3,7 +3,7 @@
 from time import sleep
 from SoloLED import SoloLED
  
-soloLED = SoloLED("udpin:0.0.0.0:14550")
+soloLED = SoloLED()
 
 soloLED.rgb(SoloLED.LED_BACK_RIGHT, SoloLED.PATTERN_SOLID, 0, 0, 255)
 soloLED.rgb(SoloLED.LED_BACK_LEFT, SoloLED.PATTERN_SOLID, 0, 255, 0)

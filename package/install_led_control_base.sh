@@ -1,14 +1,29 @@
 #!/bin/sh -e
-INSTALL_SCRIPT_VERSION=0.01
-ZIP_FILE=led_control_files.zip
+INSTALL_SCRIPT_VERSION=0.03
 
 echo "*** Installing Solo LED Control ***"
+
+tempfile=$(mktemp)
+zipfile=${tempfile}.zip
+mv ${tempfile} ${zipfile}
+
+echo "Extracting zip file data from ${0} into ${zipfile}"
+
+# Binary payload idea from http://www.linuxjournal.com/content/add-binary-payload-your-shell-scripts
+match=$(grep -aon '^PAYLOAD:$' $0 | cut -d ':' -f 1)
+if [ ${match} != "" ]; then
+    payload_start=$((match + 1))
+    tail -n +$payload_start $0 > ${zipfile}
+else
+    echo "Error finding zip file data"
+    exit
+fi
 
 tempdir=$(mktemp -d)
 echo "Created temporary directory ${tempdir}"
 
-echo "Unpacking solo_led_files.zip into ${tempdir}"
-unzip -q ${ZIP_FILE} -d ${tempdir}
+echo "Unpacking ${zipfile} into ${tempdir}"
+unzip -q ${zipfile} -d ${tempdir}
 
 if [ ! -f ${tempdir}/version_${INSTALL_SCRIPT_VERSION} ]
 then
@@ -33,6 +48,12 @@ echo "Setting permissions"
 chmod 744 /usr/local/bin/led_control.py
 chmod 744 /etc/init.d/init_leds.sh
 
+echo "Creating links"
+rm -f /home/root/led_control.py
+rm -f /home/root/SoloLED.py
+ln -s /usr/local/bin/led_control.py /home/root/led_control.py
+ln -s /usr/local/bin/SoloLED.py /home/root/SoloLED.py
+
 echo "Activating boot script"
 update-rc.d init_leds.sh start 90 4 .
 
@@ -41,7 +62,7 @@ cp -v ${tempdir}/ArduCopter-v2.px4 /firmware
 
 echo "Cleaning up"
 rm -r ${tempdir}
-rm  ${ZIP_FILE}
+rm  ${zipfile}
 rm "$0"
 
 echo "Sync filesystem"
@@ -50,4 +71,6 @@ sync
 echo "Rebooting"
 reboot
 
+exit
 
+PAYLOAD:

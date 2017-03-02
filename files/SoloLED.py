@@ -38,8 +38,8 @@ class SoloLED:
     MACRO_BLUE = 8 # No-Op
     MACRO_YELLOW = 9 # All yellow
     MACRO_WHITE = 10 # All LED's white
-    MACRO_AUTOMOBILE = 11 # White in front, red in back
-    MACRO_AVIATION = 12 # White / red / green
+    MACRO_AUTOMOBILE = 11 # White in front, red in back (Not defined in oreo-led source v1.5)
+    MACRO_AVIATION = 12 # White / red / green (Not defined in oreo-led source v1.5)
     MACRO_NOT_A_MACRO_BUT_A_CUSTOM_COMMAND = 255 # indicates this is not a macro, but a custom command
     
     # Flash patterns for rgb function
@@ -63,8 +63,8 @@ class SoloLED:
     PARAM_REPEAT = 7
     PARAM_PHASEOFFSET = 8
     PARAM_MACRO = 9
-    PARAM_RESET = 10
-    PARAM_APP_CHECKSUM = 11 # Not sure what this does.
+    PARAM_RESET = 10 # Not sure what this does (Not defined in oreo-led source v1.5)
+    PARAM_APP_CHECKSUM = 11 # Not sure what this does (Not defined in oreo-led source v1.5)
     
     CUSTOM_BYTES_LENGTH = 24
 
@@ -83,27 +83,30 @@ class SoloLED:
     
     # Set LED macro
     def macro(self, led, macro):
-        print "Setting macro", led, macro
+        print "macro", led, macro
         self.sendMessage(led, macro)
 
     # Set LED pattern and color (RGB value)
-    def color(self, led, pattern, red, green, blue):
-        print "Setting color", led, pattern, red, green, blue
+    def rgb(self, led, pattern, red, green, blue):
+        print "rgb", led, pattern, red, green, blue
         byteArray = bytearray(['R', 'G', 'B', '0', pattern, red, green, blue])
+        self.sendMessage(led, self.MACRO_NOT_A_MACRO_BUT_A_CUSTOM_COMMAND, byteArray)
+
+    # Set LED pattern, color (RGB value), and extended parameters
+    def rgbExtended(self, led, pattern, red, green, blue, amplitudeRed, amplitudeGreen, amplitudeBlue, period, phaseOffset):
+        print "rgbExtended", led, pattern, red, green, blue, amplitudeRed, amplitudeGreen, amplitudeBlue, period, phaseOffset
+        byteArray = bytearray(['R', 'G', 'B', '1', pattern, red, green, blue, amplitudeRed, amplitudeGreen, amplitudeBlue,
+                               period >> 8, period & 0xff, phaseOffset >> 8, phaseOffset & 0xff])
         self.sendMessage(led, self.MACRO_NOT_A_MACRO_BUT_A_CUSTOM_COMMAND, byteArray)
     
     # reset LED to default behavior
     def reset(self, led):
-        print "Resetting", led
+        print "reset", led
         self.macro(led, SoloLED.MACRO_RESET)
-        
-    # Set a custom mode / message for a LED
-    def custom(self, led, customBytes):
-        byteArray = bytearray(['C', 'M', 'D', '0'])
-        byteArray.extend(bytearray(customBytes))
-        self.sendMessage(led, self.MACRO_NOT_A_MACRO_BUT_A_CUSTOM_COMMAND, byteArray)
-        
+
+
     def sendMessage(self, led, macro, byteArray = bytearray()):
+        print "sendMessage", led, macro, ":".join(str(b) for b in byteArray)
         msg = self.vehicle.message_factory.led_control_encode(0, 0, led, macro, len(byteArray), self.padArray(byteArray))
         self.vehicle.send_mavlink(msg)
         # Can't find a functional flush() operation, so wait instead
