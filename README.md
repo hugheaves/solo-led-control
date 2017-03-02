@@ -82,14 +82,14 @@ optional arguments:
 
 ## Basic Information
 
-To use the script, you first specify settings or actions with "--color", "--pattern", or "--reset", followed by "--applyto", specifying to which LED's the settings should be applied.
+To use the script, you can reset the LED's with "--reset", or specify settings with "--color", "--pattern", etc. followed by "--applyto", which specifies the LED's that the settings should be applied to.
 
 ## Reset
 The "--reset" option is used to reset the LED's to their default system colors (typically red and white).
 
 For example, to reset all of the LED's, execute the following command.
 
-`led_control.py --reset --applyto all`
+`led_control.py --reset all`
 
 ## Color
 The "--color" option sets the color of the LED(s) using the supplied brightness values for red, green, and blue. The brightness can range from 0 (off) to 255 (full brightness). "--color" can also be combined with "--pattern" to specify the illumination pattern. (see Pattern below)
@@ -119,7 +119,7 @@ For example, to set all LED's to yellow, with a "strobe" pattern:
 
 Finally, you can combine different settings for different LED's into a single command:
 
-`led_control.py --reset --applyto all --color 255 128 32 --applyto front_left --applyto front_right --color 0 0 255 --pattern strobe --applyto back_left --applyto back_right`
+`led_control.py --reset all --color 255 128 32 --applyto front_left --applyto front_right --color 0 0 255 --pattern strobe --applyto back_left --applyto back_right`
 
 
 # Reducing Delay When Running Commands with Solex
@@ -143,7 +143,7 @@ Deleting the `/etc/default/init_leds` file on your Solo will prevent the colors 
 
 # Acknowledgements
 
-Thanks to Pedals2Paddles @ 3DRForums for the positive feedback, suggestions, the "standard aeronautical lighting settings", and the patience to work through my crappy instructions. :)
+Thanks to Pedals2Paddles @ 3DRForums for the positive feedback, suggestions, the "aviation standard lighting", and the patience to work through my crappy instructions. :)
 
 
 
