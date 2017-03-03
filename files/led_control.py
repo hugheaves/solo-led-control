@@ -45,7 +45,7 @@ ledChoices = choices=["all", "front_left", "front_right", "back_left", "back_rig
 parser = argparse.ArgumentParser()
 parser.add_argument("--reset", action=AppendAction, dest="commands", nargs=1, choices=ledChoices, help="Reset to default color and pattern.")
 parser.add_argument("--pattern", action=AppendAction, dest="commands", nargs=1, choices=["sine", "solid", "siren", "strobe", "fadein", "fadeout"], help="Set LED flash pattern.")
-parser.add_argument("--phaseOffset", action=AppendAction, metavar="degrees",  dest="commands", type = int, help="Set phase offset in degrees (range 0-360).")
+parser.add_argument("--phase_offset", action=AppendAction, metavar="degrees",  dest="commands", type = int, help="Set phase offset in degrees (range 0-360).")
 parser.add_argument("--period", action=AppendAction, metavar="period", dest="milliseconds", nargs=1, type = int, help="Set period in milliseconds (range 0-4000).")
 parser.add_argument("--repeat", action=AppendAction, dest="commands", metavar="count", nargs=1, type = int, help="Set repeat count (0-255).")
 parser.add_argument("--color", action=AppendAction, dest="commands", nargs=3, metavar=("red", "green", "blue"), type=int, choices=range(0, 256), help="Set LED red, green, and blue brightness values. (range 0 - 255)")
@@ -91,7 +91,7 @@ for command in parsedArgs.commands:
         color = commandArgs
     elif (commandName == "amplitude"):
         amplitude = commandArgs
-    elif (commandName == "phaseOffset"):
+    elif (commandName == "phase_offset"):
         phaseOffset = commandArgs
     elif (commandName == "period"):
         period = commandArgs

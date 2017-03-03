@@ -84,7 +84,7 @@ optional arguments:
 The `led_control.py script provideds command line options to set LED colors and patterns, and these settings can be applied to individual LED's, or all LED's at once.
 
 ## Resetting LED's
-The "--reset" option is used to reset the LED's to their default system colors (typically red and white). To reset LED's, use the "--reset" command line option, followed by the LED that should be reset. (either individual or "all").
+The "--reset" option is used to reset the LED's to their default system colors (typically red and white). To reset LED's, use the "--reset" command line option, followed by the LED that you would like to reset. (either individual or "all").
 
 For example, to reset all of the LED's, execute the following command.
 
@@ -94,12 +94,22 @@ You can reset individual LED's like this:
 
 `led_control.py --reset front_left`
 
-## Setting Colors, Patterns, etc.
-Individual command line options are provided for each of the various settings available with the Solo LEDs (color, pattern, etc.). Multiple settings can be specified at once, and then applied to one or more LEDs using the "--applyto" command line option.
+You can issue multiple reset commands at once like this:
 
-For example, to set all 
+`led_control.py --reset front_left --reset front_right`
+
+## Setting Colors, Patterns, etc.
+Individual command line options are provided to change the various LED settings (color, pattern, etc.). To change some settings, you first specify the settings you would like to change, and then use the `--applyto` option to specify which LEDs you'd like to change. For example, to set all of the LED's to strobing green, the command would be:
+
+`led_control.py --pattern strobe --color 0 255 0 --applyto all`
+
+The `--applyto` options applies any settings appearing before it (not after it) on the command line. Any settings that have not been specified take on the default values listen in each section below.
 
 ### Color
+
+**Default value:** 255 255 255 (white)
+**Range:** 0 - 255 for each value
+
 The "--color" option sets the color of the LED(s) using the supplied brightness values for red, green, and blue. The brightness can range from 0 (off) to 255 (full brightness). "--color" can also be combined with "--pattern" to specify the illumination pattern. (see Pattern below)
 
 Some examples:
@@ -116,19 +126,55 @@ Set the back (rear) LED's to orange:
 
 `led_control.py --color 255 64 0 --applyto back_left --applyto back_right`
 
-## Pattern
+### Pattern
+
+**Default value:** solid
+
 The "--pattern" option is used to specify the illumination pattern for the LED's. "--pattern" can be used with or without a color. If "--pattern" is specified without "--color", the color defaults to white.
 
 For example, to set all LED's to yellow, with a "strobe" pattern:
 
 `led_control.py --color 255 255 0 --pattern strobe --applyto all`
 
-## Combining options 
+## Note: Due to what appears to be a bug in the OreoLED firmware, the following two options (phase offset, period) only work with the "strobe" pattern.
 
-Finally, you can combine different settings for different LED's into a single command:
+### Phase Offset
 
-`led_control.py --reset all --color 255 128 32 --applyto front_left --applyto front_right --color 0 0 255 --pattern strobe --applyto back_left --applyto back_right`
+**Default value:** 0 degrees
+**Range:** 0 - 360 degrees
 
+The Solo LED patterns are repeating waves with a 360 degree cycle length. You can specify phase offsets for the pattern to have different LED's be in different parts of the pattern at the same time. 
+
+For example, by setting a 180 degree phase offset, you can have the front and back LEDs have an alternating blink:
+
+`led_control.py --phase_offset 0 --applyto front_left --applyto front_right`
+`led_control.py --phase_offset 180 --applyto back_left --applyto back_right`
+
+### Period
+
+**Default value:** 2000 milliseconds
+**Range:** 0 - 4000 milliseconds
+
+Period specifies the the repeat period (interval) for the pattern, from 0 - 4 seconds (4000 milliseconds). 
+
+For example, to set a fast blinking pattern on all LED's:
+
+`led_control.py --pattern strobe --period 300 --applyto all`
+
+### Amplitude
+
+**Default value:** 0 0 0 
+**Range:** 0 - 255 for each value
+
+**This option currently does not work.**
+
+## Multiple `--applyto` options
+
+`--applyto` can appear multiple times, to apply different settings to different LEDs. Apply to still applies all settings that appear before it on the command line, even those prior to another applyto. This is actually useful to set some "base settings", and then apply more specific settings to each LED.
+
+For example, to set the front LEDs to solid red, and the back LED's to strobing red, the `--color` option only has to be specified once:
+
+`led_control.py --color 255 0 0 --applyto front_left --applyto front_right --pattern strobe --applyto back_left --applyto back_right`
 
 # Reducing Delay When Running Commands with Solex
 Solex uses an SSH connection to Solo to run commands. Unfortunately, Solo's SSH server is configured in a way that makes is slow to respond to SSH connection requests. There is a quick fix that you can make to greatly decrease the amount of time it takes Solo to respond.
@@ -140,6 +186,11 @@ To fix the problem, open an SSH terminal connection to Solo (10.1.1.10), and exe
 You can also just edit the file, and add a line at the bottom with `UseDNS no`.
 
 Either way, you only need to do this once, as the change will persist between reboots.
+
+## IP Address
+By default, the script connects to the same system on which it is run. So, when it's run on Solo, it connects to Solo. You can also run the script on other systems that have the mavlink libraries installed. If you do that, you'll need to specify a different ip address (connect string) when you run the script. Normally, you would use "udpin:0.0.0.0:14550", like this:
+
+`led_control.py --ip udpin:0.0.0.0:14550`
 
 # Customizing startup color settings
 
