@@ -43,15 +43,15 @@ def toPattern(pattern):
 
 ledChoices = choices=["all", "front_left", "front_right", "back_left", "back_right"]
 parser = argparse.ArgumentParser()
-parser.add_argument("--reset", action=AppendAction, dest="commands", nargs=1, choices=ledChoices, help="Reset to default color and pattern.")
-parser.add_argument("--pattern", action=AppendAction, dest="commands", nargs=1, choices=["sine", "solid", "siren", "strobe", "fadein", "fadeout"], help="Set LED flash pattern.")
-parser.add_argument("--phase_offset", action=AppendAction, metavar="degrees",  dest="commands", type = int, help="Set phase offset in degrees (range 0-360).")
-parser.add_argument("--period", action=AppendAction, metavar="period", dest="milliseconds", nargs=1, type = int, help="Set period in milliseconds (range 0-4000).")
-parser.add_argument("--repeat", action=AppendAction, dest="commands", metavar="count", nargs=1, type = int, help="Set repeat count (0-255).")
+parser.add_argument("--reset", action=AppendAction, dest="commands", choices=ledChoices, help="Reset to default color and pattern.")
+parser.add_argument("--pattern", action=AppendAction, dest="commands", choices=["sine", "solid", "siren", "strobe", "fadein", "fadeout"], help="Set LED flash pattern.")
+parser.add_argument("--phase_offset", action=AppendAction, dest="commands", metavar="degrees",  type = int, help="Set phase offset in degrees (range 0-360).")
+parser.add_argument("--period", action=AppendAction, dest="commands", metavar="milliseconds", type = int, help="Set period in milliseconds (range 0-4000).")
+parser.add_argument("--repeat", action=AppendAction, dest="commands", metavar="count", type = int, help="Set repeat count (0-255).")
 parser.add_argument("--color", action=AppendAction, dest="commands", nargs=3, metavar=("red", "green", "blue"), type=int, choices=range(0, 256), help="Set LED red, green, and blue brightness values. (range 0 - 255)")
 parser.add_argument("--amplitude", action=AppendAction, dest="commands", nargs=3, metavar=("red", "green", "blue"), type=int, choices=range(0, 256), help="Set LED red, green, and blue amplitude values. (range 0 - 255)")
-parser.add_argument("--applyto", action=AppendAction, dest="commands", nargs=1, choices=ledChoices, help="Apply settings to LED(s)")
-parser.add_argument("--ip", metavar = "protocol:ipAddress:port", nargs=1, default="udpin:127.0.0.1:14550", help = "Protocol / IP address / Port number for connction")
+parser.add_argument("--applyto", action=AppendAction, dest="commands", choices=ledChoices, help="Apply settings to LED(s)")
+parser.add_argument("--ip", metavar = "protocol:ipAddress:port", default="udpin:127.0.0.1:14550", help = "Protocol / IP address / Port number for connction")
 
 parsedArgs = parser.parse_args()
 

@@ -10,7 +10,7 @@
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
 
-LED_SETTINGS="--reset --applyto all"
+LED_SETTINGS="--reset all"
 
 if test -f /etc/default/init_leds; then
     . /etc/default/init_leds

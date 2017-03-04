@@ -1,5 +1,5 @@
 #!/bin/sh -e
-INSTALL_SCRIPT_VERSION=0.03
+INSTALL_SCRIPT_VERSION=0.04
 
 echo "*** Installing Solo LED Control ***"
 
@@ -42,6 +42,8 @@ cp -v ${tempdir}/init_leds.sh /etc/init.d
 if [ ! -a /etc/default/init_leds ]
 then
   cp ${tempdir}/init_leds /etc/default
+else
+  cp ${tempdir}/init_leds /etc/default/init_leds.NEW
 fi
 
 echo "Setting permissions"

@@ -1,1 +1,1 @@
-LED_SETTINGS="--pattern siren --color 255 255 255 --applyto back_left --applyto back_right --pattern solid --color 255 0 0 --applyto front_left --color 0 255 0 --applyto front_right"
+LED_SETTINGS="--reset all --color 255 0 0 --applyto front_left --color 0 255 0 --applyto front_right --pattern strobe --period 500 --color 255 255 255 --applyto back_left --phase_offset 180 --applyto back_right"
