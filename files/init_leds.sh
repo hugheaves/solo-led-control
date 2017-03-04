@@ -22,7 +22,7 @@ do_start() {
 	sh -c "
 	sleep 20;
 	/bin/date > /var/log/init_leds.log;
-	/usr/local/bin/led_control.py --reset --applyto all >> /var/log/init_leds.log 2>&1;
+	/usr/local/bin/led_control.py --reset all >> /var/log/init_leds.log 2>&1;
 	/usr/local/bin/led_control.py ${LED_SETTINGS}  >> /var/log/init_leds.log 2>&1;
 	" &
 }
