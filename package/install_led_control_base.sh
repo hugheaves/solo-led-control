@@ -1,5 +1,5 @@
 #!/bin/sh -e
-INSTALL_SCRIPT_VERSION=0.05
+INSTALL_SCRIPT_VERSION=0.07
 
 echo "*** Installing Solo LED Control Version ${INSTALL_SCRIPT_VERSION} ***"
 

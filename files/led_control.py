@@ -51,7 +51,7 @@ parser.add_argument("--repeat", action=AppendAction, dest="commands", metavar="c
 parser.add_argument("--color", action=AppendAction, dest="commands", nargs=3, metavar=("red", "green", "blue"), type=int, choices=range(0, 256), help="Set LED red, green, and blue brightness values. (range 0 - 255)")
 parser.add_argument("--amplitude", action=AppendAction, dest="commands", nargs=3, metavar=("red", "green", "blue"), type=int, choices=range(0, 256), help="Set LED red, green, and blue amplitude values. (range 0 - 255)")
 parser.add_argument("--applyto", action=AppendAction, dest="commands", choices=ledChoices, help="Apply settings to LED(s)")
-parser.add_argument("--ip", metavar = "protocol:ipAddress:port", default="udpin:127.0.0.1:14550", help = "Protocol / IP address / Port number for connction")
+parser.add_argument("--ip", metavar = "protocol:ipAddress:port", default="udpout:127.0.0.1:14560", help = "Protocol / IP address / Port number for connction")
 
 parsedArgs = parser.parse_args()
 
