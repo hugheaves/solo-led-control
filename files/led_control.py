@@ -66,7 +66,7 @@ if parsedArgs.commands is None:
     parser.print_help()
     sys.exit()
 
-soloLED = SoloLED(parsedArgs.ip)
+soloLED = SoloLED(ip = parsedArgs.ip, wait_ready = False)
 
 for command in parsedArgs.commands:
     commandName = command[0]

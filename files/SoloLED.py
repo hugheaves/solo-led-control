@@ -118,6 +118,11 @@ class SoloLED:
         # Can't find a functional flush() operation, so wait instead (hopefully that's enough)
         sleep(0.2)
         self.vehicle.close()
+	# Cleanly shut down mavlink handler threads to avoid error on exit
         if self.vehicle._handler.mavlink_thread_in is not None:
             self.vehicle._handler.mavlink_thread_in.join()
-            self.vehicle._handler.mavlink_thread_in = None
+            self.vehicle._handler.mavlink_thread_in = None        
+	if self.vehicle._handler.mavlink_thread_out is not None:
+            self.vehicle._handler.mavlink_thread_out.join()
+
+            self.vehicle._handler.mavlink_thread_out = None
