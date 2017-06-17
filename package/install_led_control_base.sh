@@ -1,5 +1,5 @@
 #!/bin/sh -e
-INSTALL_SCRIPT_VERSION=0.07
+INSTALL_SCRIPT_VERSION=0.09
 
 echo "*** Installing Solo LED Control Version ${INSTALL_SCRIPT_VERSION} ***"
 
@@ -70,8 +70,13 @@ rm -f /home/root/SoloLED.py
 echo "Activating boot script"
 update-rc.d init_leds.sh start 90 4 .
 
-echo "Preparing firmware upgrade"
-cp -v ${tempdir}/ArduCopter-v2.px4 /firmware
+if [ $1 == "install_firmware" ]
+then
+	echo "Preparing firmware upgrade"
+	cp -v ${tempdir}/ArduCopter-v2.px4 /firmware
+else
+	echo "Skipping firmware upgrade"
+fi
 
 echo "Cleaning up"
 rm -r ${tempdir}
